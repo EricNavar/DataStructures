@@ -34,13 +34,12 @@ void heapSort(vector<T>& v)
 		heapify(v, i, n);
 	//create max heap
 	//switch first and last elements and call heapify on the new root
-	do
-	{
+	do {
 		n--;
 		swap(v[0], v[n]);
 		heapify(v, 0, n);
 	}
-	while (n)
+	while (n);
 }
 
 template<typename T>
