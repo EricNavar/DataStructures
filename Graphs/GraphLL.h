@@ -1,36 +1,77 @@
+//
+//  Graph.h
+//  
+//
+//  Created by Eric Navar on 11/8/20.
+//
+
 #pragma once
 #include <vector>
 #include "VertexListNode.h"
-#include "Graph.h"
 #include "Edge.h"
+#include "UnionFind.h"
+#include "../Sorting/SortingV.h"
+using namespace std;
 
-//Graph with an adjacency List implemented with a Linked List
-class GraphLL : public Graph
+class GraphLL
 {
-public:  
-	GraphLL();
-	void insertVertex(int vertex);
-	void insertVertices(vector<int> vertices);
-	void insertEdge(int from, int to, int weight);
+public:
+    GraphLL();
+    bool isEdge(int from, int to); //returns true if there is an edge between the vertices from and to
+    int getWeight(int from, int to); //returns the weight of the edge between the vertices from and to
+    vector<Edge> getEdges();
+    void insertEdge(int node1, int node2, int weight);  //inserts new edge in graph
+    void insertEdge(Edge &e);
+    void insertEdges(vector<Edge> &edges);
 	bool isVertex(int vertex);
-	vector<Edge> getEdges();
 	vector<int> getVertices();
-	const static int MAXNUMVERTICES = 100;
-	int vertexConverter[MAXNUMVERTICES] = {-1}; //convert vertex number into index in table
-	//vector<vector<int>> getConnectedComponents();
+    void insertVertex(int vertex);
+    void insertVertices(vector<int> &vertices);
+    GraphLL generateMST();
 private:
-	bool undirected;
+    bool undirected;
 	int numVertices;
+	const static int MAXNUMVERTICES = 100;
+	//convert vertex number into index in table
+	int vertexConverter[MAXNUMVERTICES];
+    //prints graph in a format sorted by ascending vertex and edge list
 	vector<VertexListNode> adjacencyList;  //vector of vertices
-	void insertEdgeHelper(int from, int to, int weight);
+    void insertEdgeHelper(int from, int to, int weight);
 };
 
-vector<int> GraphLL::getVertices()
+GraphLL::GraphLL()
 {
-	vector<int> result;
-	for (VertexListNode v : adjacencyList)
-		result.push_back(v.name);
-	return result;
+	numVertices = 0;
+	undirected = true;
+	fill_n(vertexConverter, 100, -1);
+}
+
+/* Preconditions: From and to are of vertices of the graph
+   Postconditions: Returns true if there is an edge between from and to and false otherwise
+*/
+bool GraphLL::isEdge(int from, int to)
+{
+	int index = vertexConverter[from];
+	VertexListNode *theHead = &adjacencyList[index];
+	VertexListNode *current = theHead;
+	while (current && current->name != to)
+		if (current->name == to)
+			return true;
+	return false;
+}
+
+/* Preconditions: From and to are vertices of the graph between which there is an edge
+   Postconditions: Returns the weight of the edge between from and to
+*/
+int GraphLL::getWeight(int from, int to)
+{
+    int index = vertexConverter[from];
+	VertexListNode *theHead = &adjacencyList[index];
+	VertexListNode *current = theHead;
+	while (current && current->name != to)
+		if (current->name == to)
+			return current->weight;
+	return -1;
 }
 
 //to avoid duplicates, this will only return edges from
@@ -57,23 +98,32 @@ vector<Edge> GraphLL::getEdges()
 	return result;
 }
 
-GraphLL::GraphLL()
-{
-	numVertices = 0;
-	undirected = true;
-	fill_n(vertexConverter, 100, -1);
-}
 
+/* Preconditions: Node1 and node2 are vertices of the graph
+   Postconditions: Inserts a bi-directional between node1 and node2 with the given weight
+*/
 void GraphLL::insertEdge(int from, int to, int weight)
 {
 	if (!isVertex(from))
 		insertVertex(from);
 	if (!isVertex(to))
 		insertVertex(to);
+    //edge from from to to
 	insertEdgeHelper(from, to, weight);
-	//undirected graph edges go both ways
+	//edge from to to from
 	if (undirected)
 		insertEdgeHelper(to, from, weight);
+}
+
+void GraphLL::insertEdge(Edge &e)
+{
+	insertEdge(e.from, e.to, e.weight);
+}
+
+void GraphLL::insertEdges(vector<Edge> &edges)
+{
+	for (Edge e : edges)
+		insertEdge(e);
 }
 
 void GraphLL::insertEdgeHelper(int from, int to, int weight)
@@ -88,10 +138,9 @@ void GraphLL::insertEdgeHelper(int from, int to, int weight)
 	current->next = newEdge;
 }
 
-void GraphLL::insertVertices(vector<int> vertices)
+bool GraphLL::isVertex(int vertex)
 {
-	for (int i : vertices)
-		insertVertex(i);
+	return vertexConverter[vertex] != -1;
 }
 
 //vertex between 0 and 99
@@ -102,7 +151,30 @@ void GraphLL::insertVertex(int vertex)
 	vertexConverter[vertex] = numVertices++;
 }
 
-bool GraphLL::isVertex(int vertex)
+void GraphLL::insertVertices(vector<int> &vertices)
 {
-	return vertexConverter[vertex] != -1;
+	for (int i : vertices)
+		insertVertex(i);
+}
+
+/* Preconditions: The graph is connected
+   Postconditions: Returns a new graph object containing only the edges representing
+   the minimum spanning tree of the graph
+*/
+GraphLL GraphLL::generateMST()
+{
+    GraphLL dad;
+    UnionFind mom;
+	vector<Edge> edges = getEdges();
+    heapSort(edges);
+    for (Edge e : edges)
+    {
+		//if e will not form a cycle then add it
+		if (mom.find(e.to) != mom.find(e.from))
+		{
+			dad.insertEdge(e);
+			mom.unite(e);
+		}
+    }
+    return dad;
 }

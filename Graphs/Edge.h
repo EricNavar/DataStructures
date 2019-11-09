@@ -1,6 +1,7 @@
 #pragma once
 struct Edge
 {
+    bool visited;
     int weight, from, to;
     Edge(int weight, int from, int to)
     {
