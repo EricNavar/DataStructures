@@ -1,4 +1,13 @@
-Provides 3 data structures written in c++
-ABQ is a Queue
-ABS is a Stack
-LinkedList is a Linked List
+Linear Data Structures
+    Queue
+    Stack
+    Dynamic Array
+    LinkedList
+Sorting Algorithms
+    SortingA.h provides functions that sort arrays
+    SortingV.h provides functions that sort vectors
+    SortingVP.h provides functions that sort vectors holding pointers. The objects being pointed to are what is supposed to be sorted
+Graph
+    Graph implemented with an adjacency list
+    Kruskal's algorithm
+    Dijkstra's algorithm

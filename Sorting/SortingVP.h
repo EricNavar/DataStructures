@@ -115,7 +115,7 @@ void merge(vector<T>& v, unsigned int left, unsigned int middle, unsigned int ri
 	unsigned int indexL = 0, indexR = 0, indexM = left; // Initial index of merged subarray
 	while (indexL < sizeL && indexR < sizeR)
 	{
-		if (leftV[indexL] <= rightV[indexR])
+		if (*leftV[indexL] <= *rightV[indexR])
 			v[indexM] = leftV[indexL++];
 		else
 			v[indexM] = rightV[indexR++];
