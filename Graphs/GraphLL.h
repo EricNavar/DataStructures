@@ -31,7 +31,6 @@ public:
 	void removeVertex(int v);
 	void removeVertices(vector<int>& vertices);
 	unsigned int getVertexCount() const;
-	int findMinIndex(vector<int>& v, unsigned int* d) const;
 	const VertexListNode* getAdjacentVertices(int name) const;
 	void printGraph() const;
 	void removeValue(vector<int>& v, int i) const;
@@ -46,6 +45,7 @@ private:
 	int vertexConverter[MAXNUMVERTICES];
     //prints graph in a format sorted by ascending vertex and edge list
 	vector<VertexListNode> adjacencyList;  //vector of vertices
+	int findMinIndex(vector<int>& v, unsigned int* d) const;
     void insertEdgeHelper(int from, int to, int weight);
 	void removeEdgeHelper(int from, int to);
 };
