@@ -8,6 +8,7 @@ struct Edge
         this->weight = weight;
         this->from = from;
         this->to = to;
+        visited = false;
     }
     bool operator>(const Edge &e) const
     {
