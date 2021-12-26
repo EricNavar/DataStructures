@@ -1,0 +1,19 @@
+void Graph::topsort() const
+{
+	queue<int> q;
+	int inDegree[MAXNUMVERTICES];
+	int size = adjacencyList.size();
+	for (int i = 0; i < size; i++)
+		inDegree[i] = getInDegree(i);
+	for (int i : theVertices)
+		if (inDegree[i] == 0)
+			q.enqueue(v);
+	while (!q.isEmpty())
+	{
+		int i = q.top();
+		q.dequeue();
+		for //Vertex w adjacent to v
+			if (--w.indegree == 0)
+				q.enqueue(w);
+	}
+}
